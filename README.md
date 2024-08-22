@@ -45,4 +45,8 @@
 6. Остановите проект. В качестве ответа приложите скриншот sql-запроса.
 
 ## Решение задачи 3
-   ![task3](https://github.com/user-attachments/assets/51f0ff95-c55b-493f-b4ec-7d4719e17a5c)
+   ### compose.yaml
+   ![task3](https://github.com/user-attachments/assets/ec24c2ac-18ea-4285-b4f2-e12cbb828514)
+
+   ### подключение к БД
+   ![task3_3_1](https://github.com/user-attachments/assets/e370fa75-cffa-4b5f-9390-6a480a048251)
