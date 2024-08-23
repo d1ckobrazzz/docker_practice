@@ -154,3 +154,10 @@ docker compose up -d
 Предоставьте скриншоты  действий .
 
 ## Решение задачи 6
+ID образа 909a9d4540ae
+![task6_2](https://github.com/user-attachments/assets/ee290aeb-1732-4f4c-a5fa-005704a55191)
+
+в интерфейсе dive видно, что искомый исполняемый файл находится на слое 2e4c7a391cbe470bdd510791978859db7e09e412dc2587c5b27451aef764cf1b
+![task6_3](https://github.com/user-attachments/assets/a2744cbf-fa92-4489-9a49-d76ff699e8a3)
+
+после чего он был успешно скопирован
