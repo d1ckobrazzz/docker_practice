@@ -50,3 +50,107 @@
 
    ### подключение к БД
    ![task3_3_1](https://github.com/user-attachments/assets/e370fa75-cffa-4b5f-9390-6a480a048251)
+
+## Задача 4
+1. Запустите в Yandex Cloud ВМ (вам хватит 2 Гб Ram).
+2. Подключитесь к Вм по ssh и установите docker.
+3. Напишите bash-скрипт, который скачает ваш fork-репозиторий в каталог /opt и запустит проект целиком.
+4. Зайдите на сайт проверки http подключений, например(или аналогичный): ```https://check-host.net/check-http``` и запустите проверку вашего сервиса ```http://<внешний_IP-адрес_вашей_ВМ>:8090```. Таким образом трафик будет направлен в ingress-proxy. ПРИМЕЧАНИЕ: Приложение весьма вероятно упадет под нагрузкой, но успеет обработать часть запросов - этого достаточно.
+5. (Необязательная часть) Дополнительно настройте remote ssh context к вашему серверу. Отобразите список контекстов и результат удаленного выполнения ```docker ps -a```
+6. В качестве ответа повторите  sql-запрос и приложите скриншот с данного сервера, bash-скрипт и ссылку на fork-репозиторий.
+
+## Решение задачи 4
+   ### проверка http подключений
+   ![task4_6](https://github.com/user-attachments/assets/9cb07c4e-1b51-42d6-96d5-5d22e7dbd1f0)
+
+   ### remote ssh context
+   ![task4_5](https://github.com/user-attachments/assets/a67c6af2-d740-4d11-b3ec-1f7c8d9a4b31)
+
+   ### bash-скрипт
+   ```bash
+#!/bin/bash
+
+#обновление реп и установка git
+sudo apt update && sudo apt install git -y
+
+#переход в рабочий каталог
+
+cd /opt
+#cd /tmp/test
+
+#загрузка репо
+sudo git clone "https://github.com/d1ckobrazzz/shvirtd-example-python"
+
+#переход в директорию проекта
+cd shvirtd-example-python
+
+
+#создание compose.yaml
+echo "
+include:
+  - proxy.yaml
+
+services:
+  db:
+    image: mysql:8
+    restart: always
+    networks:
+        backend:
+          ipv4_address: 172.20.0.10
+    ports:
+    - "127.0.0.1:3306:3306"
+    expose:
+      - "3306"
+    env_file: ".env"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 6s
+      retries: 10
+
+  web:
+#    image: cr.yandex/crpcl6r0cqu21rv4bcae/basic-app:test
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+#    tags:
+#      - "basic-app:selfbuild"
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
+    ports:
+      - "127.0.0.1:5000:5000"
+    expose:
+      - "5000"
+    env_file: ".env_app"
+    depends_on:
+        db:
+            condition: service_healthy
+" > compose.yaml
+
+#создание env
+echo "
+DB_HOST="172.20.0.10"
+DB_USER="app"
+DB_PASSWORD="QwErTy1234"
+DB_NAME="virtd"
+" >  .env_app
+
+#запуск compose
+
+docker compose up -d
+```
+
+## Задача 5 (*)
+1. Напишите и задеплойте на вашу облачную ВМ bash скрипт, который произведет резервное копирование БД mysql в директорию "/opt/backup" с помощью запуска в сети "backend" контейнера из образа ```schnitzler/mysqldump``` при помощи ```docker run ...``` команды. Подсказка: "документация образа."
+2. Протестируйте ручной запуск
+3. Настройте выполнение скрипта раз в 1 минуту через cron, crontab или systemctl timer. Придумайте способ не светить логин/пароль в git!!
+4. Предоставьте скрипт, cron-task и скриншот с несколькими резервными копиями в "/opt/backup"
+
+## Решение задачи 5
+
+## Задача 6
+Скачайте docker образ ```hashicorp/terraform:latest``` и скопируйте бинарный файл ```/bin/terraform``` на свою локальную машину, используя dive и docker save.
+Предоставьте скриншоты  действий .
+
+## Решение задачи 6
